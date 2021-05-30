@@ -1,0 +1,1 @@
+## En este directorio irá la aplicación de React una vez compilada.

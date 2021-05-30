@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  # Backend service
+  php:
+    build:
+      context: ./dockerfiles/php
+      dockerfile: 8-apache-buster.yml
+    ports:
+      - ${PHP_ENDPOINT_LOCAL_PORT}:80
+    volumes:
+      - "./backend:/var/www/html"
+
+  # Frontend service
+  nginx:
+    image: nginx
+    ports:
+      - ${NGINX_LOCAL_PORT}:80
+    volumes:
+      - "./build:/usr/share/nginx/html"
+
+  # Database services
+  mariadb:
+    image: mariadb:10
+    command: --max_allowed_packet=${DATABASE_MAX_ALLOWED_PACKET}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+    volumes:
+      - "./data:/var/lib/mysql"
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - ${PHPMYADMIN_LOCAL_PORT}:80
+    environment: 
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
+      - PMA_HOST=mariadb
+    depends_on:
+      - mariadb

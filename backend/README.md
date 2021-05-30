@@ -1,0 +1,1 @@
+## En este directorio irá la lógica de la aplicación PHP.
